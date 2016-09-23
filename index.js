@@ -19,24 +19,27 @@ var UsageTracker = {
 
         var self = this;
 
-        window.onbeforeunload = timer.on('idle', function() {
-            self.onCloseOrIdle.bind(self)();
+        window.onbeforeunload =  function(){
+            self.markWindowAsInactive();
+            if(self.allWindowsAreInactive()){
+                self.sendSessionMetric(Date.now()-self.startSessionTimestamp);
+            }
+        };
+
+        timer.on('idle', function() {
+            self.markWindowAsInactive();
+            if(self.allWindowsAreInactive()){
+                self.sendSessionMetric(Date.now()-self.startSessionTimestamp-self.timespanOfInactivityToExpireSession);
+            }
         });
 
         timer.on('active', function() {
-             if(self.allWindowsAreInactive()){
-                this.startSessionTimestamp = Date.now();
+            if(self.allWindowsAreInactive()){
+                self.startSessionTimestamp = Date.now();
             }
-            self.markWindowAsActive();
+            self.markWindowAsActive.bind(self)();
         });
         
-    },
-
-    onCloseOrIdle: function(){
-        this.markWindowAsInactive();
-        if(this.allWindowsAreInactive()){
-            this.sendSessionMetric(Date.now()-this.startSessionTimestamp-this.timespanOfInactivityToExpireSession);
-        }
     },
 
     allWindowsAreInactive: function(){
@@ -45,7 +48,6 @@ var UsageTracker = {
 
 
     markWindowAsInactive : function(){
-
         var activeWindows = localStorage.getItem('activeWindows');
         activeWindows = removeValue(activeWindows.split(","), this.windowId.toString()).toString();
         localStorage.setItem('activeWindows', activeWindows);
@@ -61,10 +63,8 @@ var UsageTracker = {
         AppInsights.trackMetric(
             "Session Duration (seconds)", 
             durationInMs/1000,
-            1,
-            null,
-            null,
-            {'urlReferrer' : document.referrer});
+            1);
+        AppInsights.flush();
     },
 }
 

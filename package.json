@@ -1,6 +1,6 @@
 {
   "name": "appinsights-usage",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Javascript module to track usage with Application Insights",
   "main": "lib/index.js",
   "scripts": {

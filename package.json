@@ -1,5 +1,5 @@
 {
-  "name": "ai-usage",
+  "name": "appinsights-usage",
   "version": "1.0.0",
   "description": "Javascript module to track usage with Application Insights",
   "main": "lib/index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/anastasiia-zolochevska/ai-usage.git"
+    "url": "git+https://github.com/anastasiia-zolochevska/appinsights-usage.git"
   },
   "keywords": [
     "ai",
@@ -22,9 +22,9 @@
   "author": "Anastasiia Zolochevska <anastasiia.zolochevska@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/anastasiia-zolochevska/ai-usage/issues"
+    "url": "https://github.com/anastasiia-zolochevska/appinsights-usage/issues"
   },
-  "homepage": "https://github.com/anastasiia-zolochevska/ai-usage#readme",
+  "homepage": "https://github.com/anastasiia-zolochevska/appinsights-usage#readme",
   "dependencies": {
     "applicationinsights-js": "^1.0.3",
     "away": "^1.0.0",

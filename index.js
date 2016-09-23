@@ -10,6 +10,10 @@ var UsageTracker = {
 
     init: function(appInsightsOptions){
 
+        if(!window.localStorage) {
+            return;
+        }
+
         AppInsights.downloadAndSetup(appInsightsOptions);
 
         var timer = away(this.timespanOfInactivityToExpireSession);
@@ -47,7 +51,7 @@ var UsageTracker = {
     },
 
     allWindowsAreInactive: function(){
-        return localStorage.getItem('activeWindows').length==0
+        return !localStorage.getItem('activeWindows') || localStorage.getItem('activeWindows').length==0
     },
 
 

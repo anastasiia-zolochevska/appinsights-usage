@@ -1,0 +1,35 @@
+{
+  "name": "ai-usage",
+  "version": "1.0.0",
+  "description": "Javascript module to track usage with Application Insights",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "./node_modules/.bin/babel index.js --out-dir lib",
+    "prepublish": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anastasiia-zolochevska/ai-usage.git"
+  },
+  "keywords": [
+    "ai",
+    "Application",
+    "Insights",
+    "appinsights",
+    "usage",
+    "telemetry"
+  ],
+  "author": "Anastasiia Zolochevska <anastasiia.zolochevska@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/anastasiia-zolochevska/ai-usage/issues"
+  },
+  "homepage": "https://github.com/anastasiia-zolochevska/ai-usage#readme",
+  "dependencies": {
+    "applicationinsights-js": "^1.0.3",
+    "away": "^1.0.0",
+    "babel-cli": "^6.14.0",
+    "babel-preset-es2015": "^6.14.0",
+    "remove-value": "^1.0.0"
+  }
+}

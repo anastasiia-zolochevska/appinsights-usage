@@ -7,35 +7,39 @@ var UsageTracker = {
 
     timespanOfInactivityToExpireSession:1800000,
     windowId : Date.now(),
-    startSessionTimestamp: Date.now(),
 
     init: function(appInsightsOptions){
 
         AppInsights.downloadAndSetup(appInsightsOptions);
 
         var timer = away(this.timespanOfInactivityToExpireSession);
+        
+         if(this.allWindowsAreInactive()){
+             localStorage.setItem('startSessionTimestamp', Date.now());
+         }
 
         this.markWindowAsActive();
+        
 
         var self = this;
 
         window.onbeforeunload =  function(){
             self.markWindowAsInactive();
             if(self.allWindowsAreInactive()){
-                self.sendSessionMetric(Date.now()-self.startSessionTimestamp);
+                self.sendSessionMetric(Date.now()-parseInt(localStorage.getItem('startSessionTimestamp')));
             }
         };
 
         timer.on('idle', function() {
             self.markWindowAsInactive();
             if(self.allWindowsAreInactive()){
-                self.sendSessionMetric(Date.now()-self.startSessionTimestamp-self.timespanOfInactivityToExpireSession);
+                self.sendSessionMetric(Date.now()-parseInt(localStorage.getItem('startSessionTimestamp'))-self.timespanOfInactivityToExpireSession);
             }
         });
 
         timer.on('active', function() {
             if(self.allWindowsAreInactive()){
-                self.startSessionTimestamp = Date.now();
+                localStorage.setItem('startSessionTimestamp', Date.now());
             }
             self.markWindowAsActive.bind(self)();
         });
@@ -62,9 +66,11 @@ var UsageTracker = {
     sendSessionMetric: function (durationInMs){
         AppInsights.trackMetric(
             "Session Duration (seconds)", 
-            durationInMs/1000,
+            Math.round(durationInMs/1000),
             1);
         AppInsights.flush();
+        //for logging only:
+        // localStorage.setItem('Sessions', localStorage.getItem('Sessions')+","+Math.round(durationInMs/1000));
     },
 }
 

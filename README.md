@@ -2,6 +2,9 @@
 
 ### Javascript module to track usage with [Application Insights](https://github.com/Microsoft/ApplicationInsights-JS/blob/master/API-reference.md).
 
+Current version supports tracking sessions only. 
+We measure session by tracking user activity in web application per browser. Session is closed if user is not active for 30 minutes or he closes all browser tabs with application.
+
 ## Installation
 
 With npm:

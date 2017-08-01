@@ -28,8 +28,10 @@
   "dependencies": {
     "applicationinsights-js": "^1.0.3",
     "away": "^1.0.0",
-    "babel-cli": "^6.14.0",
-    "babel-preset-es2015": "^6.14.0",
     "remove-value": "^1.0.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.14.0",
+    "babel-preset-es2015": "^6.14.0"
   }
 }

@@ -8,9 +8,28 @@ var UsageTracker = {
     timespanOfInactivityToExpireSession:1800000,
     windowId : Date.now(),
 
-    init: function(appInsightsOptions){
+    getStorageObject: function(){
+        var storage = null;
+        var fail;
+        var uid;
+        try {
+            uid = new Date();
+            storage = window.localStorage;
+            storage.setItem(uid, uid);
+            fail = storage.getItem(uid) != uid;
+            storage.removeItem(uid);
+            if (fail) {
+                storage = null;
+            }
+        } catch (exception) {
+            storage = null;
+        }
 
-        if(!window.localStorage) {
+        return storage;
+    },
+    init: function(appInsightsOptions){
+        var storage = this.getStorageObject();
+        if(!storage) {
             return;
         }
 
@@ -19,7 +38,7 @@ var UsageTracker = {
         var timer = away(this.timespanOfInactivityToExpireSession);
         
          if(this.allWindowsAreInactive()){
-             localStorage.setItem('startSessionTimestamp', Date.now());
+             storage.setItem('startSessionTimestamp', Date.now());
          }
 
         this.markWindowAsActive();
@@ -30,20 +49,20 @@ var UsageTracker = {
         window.onbeforeunload =  function(){
             self.markWindowAsInactive();
             if(self.allWindowsAreInactive()){
-                self.sendSessionMetric(Date.now()-parseInt(localStorage.getItem('startSessionTimestamp')));
+                self.sendSessionMetric(Date.now()-parseInt(storage.getItem('startSessionTimestamp')));
             }
         };
 
         timer.on('idle', function() {
             self.markWindowAsInactive();
             if(self.allWindowsAreInactive()){
-                self.sendSessionMetric(Date.now()-parseInt(localStorage.getItem('startSessionTimestamp'))-self.timespanOfInactivityToExpireSession);
+                self.sendSessionMetric(Date.now()-parseInt(storage.getItem('startSessionTimestamp'))-self.timespanOfInactivityToExpireSession);
             }
         });
 
         timer.on('active', function() {
             if(self.allWindowsAreInactive()){
-                localStorage.setItem('startSessionTimestamp', Date.now());
+                storage.setItem('startSessionTimestamp', Date.now());
             }
             self.markWindowAsActive.bind(self)();
         });
@@ -51,20 +70,20 @@ var UsageTracker = {
     },
 
     allWindowsAreInactive: function(){
-        return !localStorage.getItem('activeWindows') || localStorage.getItem('activeWindows').length==0
+        return !storage.getItem('activeWindows') || storage.getItem('activeWindows').length==0
     },
 
 
     markWindowAsInactive : function(){
-        var activeWindows = localStorage.getItem('activeWindows');
+        var activeWindows = storage.getItem('activeWindows');
         activeWindows = removeValue(activeWindows.split(","), this.windowId.toString()).toString();
-        localStorage.setItem('activeWindows', activeWindows);
+        storage.setItem('activeWindows', activeWindows);
     },
 
     markWindowAsActive : function(){
-        var activeWindows = localStorage.getItem('activeWindows')? localStorage.getItem('activeWindows') : '';
+        var activeWindows = storage.getItem('activeWindows')? storage.getItem('activeWindows') : '';
         activeWindows+="," + this.windowId;
-        localStorage.setItem('activeWindows', activeWindows);
+        storage.setItem('activeWindows', activeWindows);
     },
 
     sendSessionMetric: function (durationInMs){
@@ -74,7 +93,7 @@ var UsageTracker = {
             1);
         AppInsights.flush();
         //for logging only:
-        // localStorage.setItem('Sessions', localStorage.getItem('Sessions')+","+Math.round(durationInMs/1000));
+        // storage.setItem('Sessions', storage.getItem('Sessions')+","+Math.round(durationInMs/1000));
     },
 }
 

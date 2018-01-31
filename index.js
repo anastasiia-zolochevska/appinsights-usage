@@ -56,7 +56,7 @@ var UsageTracker = {
 
 
     markWindowAsInactive : function(){
-        var activeWindows = localStorage.getItem('activeWindows');
+        var activeWindows = localStorage.getItem('activeWindows')? localStorage.getItem('activeWindows') : '';
         activeWindows = removeValue(activeWindows.split(","), this.windowId.toString()).toString();
         localStorage.setItem('activeWindows', activeWindows);
     },
